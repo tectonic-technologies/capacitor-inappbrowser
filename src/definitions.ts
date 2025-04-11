@@ -1,4 +1,4 @@
-import type { PluginListenerHandle } from "@capacitor/core";
+import type { PluginListenerHandle } from '@capacitor/core';
 
 export interface UrlEvent {
   /**
@@ -22,25 +22,25 @@ export type ConfirmBtnListener = (state: BtnEvent) => void;
 export type ButtonNearListener = (state: object) => void;
 
 export enum BackgroundColor {
-  WHITE = "white",
-  BLACK = "black",
+  WHITE = 'white',
+  BLACK = 'black',
 }
 export enum ToolBarType {
   /**
    * Shows a simple toolbar with just a close button and share button
    * @since 0.1.0
    */
-  ACTIVITY = "activity",
+  ACTIVITY = 'activity',
   /**
    * Shows a full navigation toolbar with back/forward buttons
    * @since 0.1.0
    */
-  NAVIGATION = "navigation",
+  NAVIGATION = 'navigation',
   /**
    * Shows no toolbar
    * @since 0.1.0
    */
-  BLANK = "blank",
+  BLANK = 'blank',
 }
 
 export interface Headers {
@@ -100,6 +100,16 @@ export interface DisclaimerOptions {
    * @default "Cancel"
    */
   cancelBtn: string;
+}
+
+export interface OpenWebViewCookieOption {
+  url: string;
+  name: string;
+  value: string;
+  path: string;
+  domain: string;
+  secure: boolean;
+  httpOnly: boolean;
 }
 
 export interface OpenWebViewOptions {
@@ -384,11 +394,11 @@ export interface OpenWebViewOptions {
    */
   buttonNearDone?: {
     ios: {
-      iconType: "sf-symbol" | "asset";
+      iconType: 'sf-symbol' | 'asset';
       icon: string;
     };
     android: {
-      iconType: "asset" | "vector";
+      iconType: 'asset' | 'vector';
       icon: string;
       width?: number;
       height?: number;
@@ -413,6 +423,23 @@ export interface OpenWebViewOptions {
    * Test URL: https://aasa-tester.capgo.app/
    */
   preventDeeplink?: boolean;
+
+  /**
+   * cookies: an array of cookies to be set on the webview.
+   * @since 7.7.0
+   * @example
+   * cookies: [{
+   *   url: 'https://example.com',
+   *   name: 'test',
+   *   value: 'test',
+   *   path: '/',
+   *   domain: 'example.com',
+   *   secure: true,
+   *   httpOnly: true
+   * }]
+   * Test URL: https://capgo.app
+   */
+  cookies?: OpenWebViewCookieOption[];
 }
 
 export interface InAppBrowserPlugin {
@@ -483,34 +510,22 @@ export interface InAppBrowserPlugin {
    *
    * @since 0.0.1
    */
-  addListener(
-    eventName: "urlChangeEvent",
-    listenerFunc: UrlChangeListener,
-  ): Promise<PluginListenerHandle>;
+  addListener(eventName: 'urlChangeEvent', listenerFunc: UrlChangeListener): Promise<PluginListenerHandle>;
 
-  addListener(
-    eventName: "buttonNearDoneClick",
-    listenerFunc: ButtonNearListener,
-  ): Promise<PluginListenerHandle>;
+  addListener(eventName: 'buttonNearDoneClick', listenerFunc: ButtonNearListener): Promise<PluginListenerHandle>;
 
   /**
    * Listen for close click only for openWebView
    *
    * @since 0.4.0
    */
-  addListener(
-    eventName: "closeEvent",
-    listenerFunc: UrlChangeListener,
-  ): Promise<PluginListenerHandle>;
+  addListener(eventName: 'closeEvent', listenerFunc: UrlChangeListener): Promise<PluginListenerHandle>;
   /**
    * Will be triggered when user clicks on confirm button when disclaimer is required
    *
    * @since 0.0.1
    */
-  addListener(
-    eventName: "confirmBtnClicked",
-    listenerFunc: ConfirmBtnListener,
-  ): Promise<PluginListenerHandle>;
+  addListener(eventName: 'confirmBtnClicked', listenerFunc: ConfirmBtnListener): Promise<PluginListenerHandle>;
   /**
    * Will be triggered when event is sent from webview(inappbrowser), to send an event to the main app use window.mobileApp.postMessage({ "detail": { "message": "myMessage" } })
    * detail is the data you want to send to the main app, it's a requirement of Capacitor we cannot send direct objects
@@ -519,25 +534,19 @@ export interface InAppBrowserPlugin {
    * This method is inject at runtime in the webview
    */
   addListener(
-    eventName: "messageFromWebview",
+    eventName: 'messageFromWebview',
     listenerFunc: (event: { detail: Record<string, any> }) => void,
   ): Promise<PluginListenerHandle>;
 
   /**
    * Will be triggered when page is loaded
    */
-  addListener(
-    eventName: "browserPageLoaded",
-    listenerFunc: () => void,
-  ): Promise<PluginListenerHandle>;
+  addListener(eventName: 'browserPageLoaded', listenerFunc: () => void): Promise<PluginListenerHandle>;
 
   /**
    * Will be triggered when page load error
    */
-  addListener(
-    eventName: "pageLoadError",
-    listenerFunc: () => void,
-  ): Promise<PluginListenerHandle>;
+  addListener(eventName: 'pageLoadError', listenerFunc: () => void): Promise<PluginListenerHandle>;
   /**
    * Remove all listeners for this plugin.
    *
