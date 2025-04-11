@@ -320,7 +320,7 @@ Sets the URL of the webview.
 ### addListener('urlChangeEvent', ...)
 
 ```typescript
-addListener(eventName: "urlChangeEvent", listenerFunc: UrlChangeListener) => Promise<PluginListenerHandle>
+addListener(eventName: 'urlChangeEvent', listenerFunc: UrlChangeListener) => Promise<PluginListenerHandle>
 ```
 
 Listen for url change, only for openWebView
@@ -340,7 +340,7 @@ Listen for url change, only for openWebView
 ### addListener('buttonNearDoneClick', ...)
 
 ```typescript
-addListener(eventName: "buttonNearDoneClick", listenerFunc: ButtonNearListener) => Promise<PluginListenerHandle>
+addListener(eventName: 'buttonNearDoneClick', listenerFunc: ButtonNearListener) => Promise<PluginListenerHandle>
 ```
 
 | Param              | Type                                                              |
@@ -356,7 +356,7 @@ addListener(eventName: "buttonNearDoneClick", listenerFunc: ButtonNearListener) 
 ### addListener('closeEvent', ...)
 
 ```typescript
-addListener(eventName: "closeEvent", listenerFunc: UrlChangeListener) => Promise<PluginListenerHandle>
+addListener(eventName: 'closeEvent', listenerFunc: UrlChangeListener) => Promise<PluginListenerHandle>
 ```
 
 Listen for close click only for openWebView
@@ -376,7 +376,7 @@ Listen for close click only for openWebView
 ### addListener('confirmBtnClicked', ...)
 
 ```typescript
-addListener(eventName: "confirmBtnClicked", listenerFunc: ConfirmBtnListener) => Promise<PluginListenerHandle>
+addListener(eventName: 'confirmBtnClicked', listenerFunc: ConfirmBtnListener) => Promise<PluginListenerHandle>
 ```
 
 Will be triggered when user clicks on confirm button when disclaimer is required
@@ -396,7 +396,7 @@ Will be triggered when user clicks on confirm button when disclaimer is required
 ### addListener('messageFromWebview', ...)
 
 ```typescript
-addListener(eventName: "messageFromWebview", listenerFunc: (event: { detail: Record<string, any>; }) => void) => Promise<PluginListenerHandle>
+addListener(eventName: 'messageFromWebview', listenerFunc: (event: { detail: Record<string, any>; }) => void) => Promise<PluginListenerHandle>
 ```
 
 Will be triggered when event is sent from webview(inappbrowser), to send an event to the main app use window.mobileApp.postMessage({ "detail": { "message": "myMessage" } })
@@ -418,7 +418,7 @@ This method is inject at runtime in the webview
 ### addListener('browserPageLoaded', ...)
 
 ```typescript
-addListener(eventName: "browserPageLoaded", listenerFunc: () => void) => Promise<PluginListenerHandle>
+addListener(eventName: 'browserPageLoaded', listenerFunc: () => void) => Promise<PluginListenerHandle>
 ```
 
 Will be triggered when page is loaded
@@ -436,7 +436,7 @@ Will be triggered when page is loaded
 ### addListener('pageLoadError', ...)
 
 ```typescript
-addListener(eventName: "pageLoadError", listenerFunc: () => void) => Promise<PluginListenerHandle>
+addListener(eventName: 'pageLoadError', listenerFunc: () => void) => Promise<PluginListenerHandle>
 ```
 
 Will be triggered when page load error
@@ -550,6 +550,7 @@ Reload the current web page.
 | **`buttonNearDone`**                   | <code>{ ios: { iconType: 'sf-symbol' \| 'asset'; icon: string; }; android: { iconType: 'asset' \| 'vector'; icon: string; width?: number; height?: number; }; }</code> | buttonNearDone allows for a creation of a custom button near the done/close button. The button is only shown when toolbarType is not "activity", "navigation", or "blank". For Android: - iconType must be "asset" - icon path should be in the public folder (e.g. "monkey.svg") - width and height are optional, defaults to 48dp - button is positioned at the end of toolbar with 8dp margin For iOS: - iconType can be "sf-symbol" or "asset" - for sf-symbol, icon should be the symbol name - for asset, icon should be the asset name |                                                            | 6.7.0  |
 | **`textZoom`**                         | <code>number</code>                                                                                                                                                    | textZoom: sets the text zoom of the page in percent. Allows users to increase or decrease the text size for better readability.                                                                                                                                                                                                                                                                                                                                                                                                               | <code>100</code>                                           | 7.6.0  |
 | **`preventDeeplink`**                  | <code>boolean</code>                                                                                                                                                   | preventDeeplink: if true, the deeplink will not be opened, if false the deeplink will be opened when clicked on the link. on IOS each schema need to be added to info.plist file under LSApplicationQueriesSchemes when false to make it work.                                                                                                                                                                                                                                                                                                | <code>false</code>                                         | 0.1.0  |
+| **`cookies`**                          | <code>OpenWebViewCookieOption[]</code>                                                                                                                                 | cookies: an array of cookies to be set on the webview.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |                                                            | 7.7.0  |
 
 
 #### Headers
@@ -571,6 +572,19 @@ Reload the current web page.
 | **`message`**    | <code>string</code> | Message shown in the disclaimer dialog | <code>"Message"</code> |
 | **`confirmBtn`** | <code>string</code> | Text for the confirm button            | <code>"Confirm"</code> |
 | **`cancelBtn`**  | <code>string</code> | Text for the cancel button             | <code>"Cancel"</code>  |
+
+
+#### OpenWebViewCookieOption
+
+| Prop           | Type                 |
+| -------------- | -------------------- |
+| **`url`**      | <code>string</code>  |
+| **`name`**     | <code>string</code>  |
+| **`value`**    | <code>string</code>  |
+| **`path`**     | <code>string</code>  |
+| **`domain`**   | <code>string</code>  |
+| **`secure`**   | <code>boolean</code> |
+| **`httpOnly`** | <code>boolean</code> |
 
 
 #### PluginListenerHandle
@@ -657,17 +671,17 @@ Construct a type with a set of properties K of type T
 
 | Members          | Value                     | Description                                                      | Since |
 | ---------------- | ------------------------- | ---------------------------------------------------------------- | ----- |
-| **`ACTIVITY`**   | <code>"activity"</code>   | Shows a simple toolbar with just a close button and share button | 0.1.0 |
-| **`NAVIGATION`** | <code>"navigation"</code> | Shows a full navigation toolbar with back/forward buttons        | 0.1.0 |
-| **`BLANK`**      | <code>"blank"</code>      | Shows no toolbar                                                 | 0.1.0 |
+| **`ACTIVITY`**   | <code>'activity'</code>   | Shows a simple toolbar with just a close button and share button | 0.1.0 |
+| **`NAVIGATION`** | <code>'navigation'</code> | Shows a full navigation toolbar with back/forward buttons        | 0.1.0 |
+| **`BLANK`**      | <code>'blank'</code>      | Shows no toolbar                                                 | 0.1.0 |
 
 
 #### BackgroundColor
 
 | Members     | Value                |
 | ----------- | -------------------- |
-| **`WHITE`** | <code>"white"</code> |
-| **`BLACK`** | <code>"black"</code> |
+| **`WHITE`** | <code>'white'</code> |
+| **`BLACK`** | <code>'black'</code> |
 
 </docgen-api>
 

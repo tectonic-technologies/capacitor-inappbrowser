@@ -2,6 +2,8 @@ package ee.forgr.capacitor_inappbrowser;
 
 import android.content.res.AssetManager;
 import androidx.annotation.Nullable;
+
+import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.PluginCall;
 import java.io.IOException;
@@ -176,6 +178,17 @@ public class Options {
   private boolean materialPicker = false;
   private int textZoom = 100; // Default text zoom is 100%
   private boolean preventDeeplink = false;
+
+
+  private JSArray cookies;
+
+  public JSArray getCookies() {
+    return cookies;
+  }
+
+  public void setCookies(JSArray cookies) {
+    this.cookies = cookies;
+  }
 
   public int getTextZoom() {
     return textZoom;

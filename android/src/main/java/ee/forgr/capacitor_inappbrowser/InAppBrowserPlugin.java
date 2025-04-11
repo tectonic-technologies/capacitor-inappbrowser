@@ -457,6 +457,8 @@ public class InAppBrowserPlugin
       Boolean.TRUE.equals(call.getBoolean("ignoreUntrustedSSLError", false))
     );
 
+    options.setCookies(call.getArray("cookies"));
+
     // Set text zoom if specified in options (default is 100)
     Integer textZoom = call.getInt("textZoom");
     if (textZoom != null) {

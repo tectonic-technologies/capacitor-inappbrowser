@@ -48,6 +48,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
+import android.webkit.CookieManager;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.FileProvider;
@@ -57,6 +58,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 import com.caverock.androidsvg.SVG;
 import com.caverock.androidsvg.SVGParseException;
+import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -839,6 +841,56 @@ public class WebViewDialog extends Dialog {
         }
       }
     }
+
+    CookieManager cookieManager = CookieManager.getInstance();
+    cookieManager.setAcceptCookie(true);
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      cookieManager.setAcceptThirdPartyCookies(_webView, true);
+    }
+
+    JSArray cookieArray = _options.getCookies();
+
+    if(cookieArray != null) {
+      for (int i = 0; i < cookieArray.length(); i++) {
+        try{
+          JSObject cookie = new JSObject(cookieArray.getJSONObject(i).toString());
+          String url = cookie.getString("url");
+          String name = cookie.getString("name");
+          String value = cookie.getString("value");
+
+          if (url == null || name == null || value == null) continue;
+
+          StringBuilder cookieStr = new StringBuilder();
+          cookieStr.append(name).append("=").append(value);
+
+          if (cookie.has("path")) {
+            cookieStr.append("; Path=").append(cookie.getString("path"));
+          }
+          if (cookie.has("domain")) {
+            cookieStr.append("; Domain=").append(cookie.getString("domain"));
+          }
+          if (cookie.getBoolean("secure", false)) {
+            cookieStr.append("; Secure");
+          }
+          if (cookie.getBoolean("httpOnly", false)) {
+            cookieStr.append("; HttpOnly");
+          }
+          if (cookie.has("maxAge")) {
+            cookieStr.append("; Max-Age=").append(cookie.getInteger("maxAge"));
+          }
+
+          cookieManager.setCookie(url, cookieStr.toString());
+        } catch(JSONException e){
+          Log.e("InAppBrowser", "Unable to set cookies " + e.getMessage());
+        }
+
+      }
+
+      // Needed to ensure cookies are flushed to disk
+      cookieManager.flush();
+    }
+
 
     _webView.loadUrl(this._options.getUrl(), requestHeaders);
     _webView.requestFocus();
