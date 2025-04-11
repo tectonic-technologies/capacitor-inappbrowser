@@ -194,7 +194,7 @@
       },
       {
         "name": "addListener",
-        "signature": "(eventName: \"urlChangeEvent\", listenerFunc: UrlChangeListener) => Promise<PluginListenerHandle>",
+        "signature": "(eventName: 'urlChangeEvent', listenerFunc: UrlChangeListener) => Promise<PluginListenerHandle>",
         "parameters": [
           {
             "name": "eventName",
@@ -223,7 +223,7 @@
       },
       {
         "name": "addListener",
-        "signature": "(eventName: \"buttonNearDoneClick\", listenerFunc: ButtonNearListener) => Promise<PluginListenerHandle>",
+        "signature": "(eventName: 'buttonNearDoneClick', listenerFunc: ButtonNearListener) => Promise<PluginListenerHandle>",
         "parameters": [
           {
             "name": "eventName",
@@ -247,7 +247,7 @@
       },
       {
         "name": "addListener",
-        "signature": "(eventName: \"closeEvent\", listenerFunc: UrlChangeListener) => Promise<PluginListenerHandle>",
+        "signature": "(eventName: 'closeEvent', listenerFunc: UrlChangeListener) => Promise<PluginListenerHandle>",
         "parameters": [
           {
             "name": "eventName",
@@ -276,7 +276,7 @@
       },
       {
         "name": "addListener",
-        "signature": "(eventName: \"confirmBtnClicked\", listenerFunc: ConfirmBtnListener) => Promise<PluginListenerHandle>",
+        "signature": "(eventName: 'confirmBtnClicked', listenerFunc: ConfirmBtnListener) => Promise<PluginListenerHandle>",
         "parameters": [
           {
             "name": "eventName",
@@ -305,7 +305,7 @@
       },
       {
         "name": "addListener",
-        "signature": "(eventName: \"messageFromWebview\", listenerFunc: (event: { detail: Record<string, any>; }) => void) => Promise<PluginListenerHandle>",
+        "signature": "(eventName: 'messageFromWebview', listenerFunc: (event: { detail: Record<string, any>; }) => void) => Promise<PluginListenerHandle>",
         "parameters": [
           {
             "name": "eventName",
@@ -329,7 +329,7 @@
       },
       {
         "name": "addListener",
-        "signature": "(eventName: \"browserPageLoaded\", listenerFunc: () => void) => Promise<PluginListenerHandle>",
+        "signature": "(eventName: 'browserPageLoaded', listenerFunc: () => void) => Promise<PluginListenerHandle>",
         "parameters": [
           {
             "name": "eventName",
@@ -352,7 +352,7 @@
       },
       {
         "name": "addListener",
-        "signature": "(eventName: \"pageLoadError\", listenerFunc: () => void) => Promise<PluginListenerHandle>",
+        "signature": "(eventName: 'pageLoadError', listenerFunc: () => void) => Promise<PluginListenerHandle>",
         "parameters": [
           {
             "name": "eventName",
@@ -1065,6 +1065,24 @@
           "docs": "preventDeeplink: if true, the deeplink will not be opened, if false the deeplink will be opened when clicked on the link. on IOS each schema need to be added to info.plist file under LSApplicationQueriesSchemes when false to make it work.",
           "complexTypes": [],
           "type": "boolean | undefined"
+        },
+        {
+          "name": "cookies",
+          "tags": [
+            {
+              "text": "7.7.0",
+              "name": "since"
+            },
+            {
+              "text": "cookies: [{\n  url: 'https://example.com',\n  name: 'test',\n  value: 'test',\n  path: '/',\n  domain: 'example.com',\n  secure: true,\n  httpOnly: true\n}]\nTest URL: https://capgo.app",
+              "name": "example"
+            }
+          ],
+          "docs": "cookies: an array of cookies to be set on the webview.",
+          "complexTypes": [
+            "OpenWebViewCookieOption"
+          ],
+          "type": "OpenWebViewCookieOption[] | undefined"
         }
       ]
     },
@@ -1157,6 +1175,64 @@
       ]
     },
     {
+      "name": "OpenWebViewCookieOption",
+      "slug": "openwebviewcookieoption",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "url",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "name",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "path",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "domain",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "secure",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "boolean"
+        },
+        {
+          "name": "httpOnly",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "boolean"
+        }
+      ]
+    },
+    {
       "name": "PluginListenerHandle",
       "slug": "pluginlistenerhandle",
       "docs": "",
@@ -1222,7 +1298,7 @@
       "members": [
         {
           "name": "ACTIVITY",
-          "value": "\"activity\"",
+          "value": "'activity'",
           "tags": [
             {
               "text": "0.1.0",
@@ -1233,7 +1309,7 @@
         },
         {
           "name": "NAVIGATION",
-          "value": "\"navigation\"",
+          "value": "'navigation'",
           "tags": [
             {
               "text": "0.1.0",
@@ -1244,7 +1320,7 @@
         },
         {
           "name": "BLANK",
-          "value": "\"blank\"",
+          "value": "'blank'",
           "tags": [
             {
               "text": "0.1.0",
@@ -1261,13 +1337,13 @@
       "members": [
         {
           "name": "WHITE",
-          "value": "\"white\"",
+          "value": "'white'",
           "tags": [],
           "docs": ""
         },
         {
           "name": "BLACK",
-          "value": "\"black\"",
+          "value": "'black'",
           "tags": [],
           "docs": ""
         }
