@@ -1,5 +1,5 @@
-import Capacitor
 import Foundation
+import Capacitor
 import WebKit
 
 extension UIColor {
@@ -18,8 +18,10 @@ extension UIColor {
 
 }
 
-/// Please read the Capacitor iOS Plugin Development Guide
-/// here: https://capacitorjs.com/docs/plugins/ios
+/**
+ * Please read the Capacitor iOS Plugin Development Guide
+ * here: https://capacitorjs.com/docs/plugins/ios
+ */
 @objc(InAppBrowserPlugin)
 public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
     public let identifier = "InAppBrowserPlugin"
@@ -36,7 +38,7 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "show", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "close", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "executeScript", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "postMessage", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "postMessage", returnType: CAPPluginReturnPromise)
     ]
     var navigationWebViewController: UINavigationController?
     private var privacyScreen: UIImageView?
@@ -53,19 +55,11 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
         self.isSetupDone = true
 
         #if swift(>=4.2)
-            NotificationCenter.default.addObserver(
-                self, selector: #selector(appDidBecomeActive(_:)),
-                name: UIApplication.didBecomeActiveNotification, object: nil)
-            NotificationCenter.default.addObserver(
-                self, selector: #selector(appWillResignActive(_:)),
-                name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(appWillResignActive(_:)), name: UIApplication.willResignActiveNotification, object: nil)
         #else
-            NotificationCenter.default.addObserver(
-                self, selector: #selector(appDidBecomeActive(_:)),
-                name: .UIApplicationDidBecomeActive, object: nil)
-            NotificationCenter.default.addObserver(
-                self, selector: #selector(appWillResignActive(_:)),
-                name: .UIApplicationWillResignActive, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive(_:)), name: .UIApplicationDidBecomeActive, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(appWillResignActive(_:)), name: .UIApplicationWillResignActive, object: nil)
         #endif
     }
 
@@ -75,11 +69,9 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
             return
         }
 
-        self.bridge?.viewController?.present(
-            navigationController, animated: isAnimated,
-            completion: {
-                self.currentPluginCall?.resolve()
-            })
+        self.bridge?.viewController?.present(navigationController, animated: isAnimated, completion: {
+            self.currentPluginCall?.resolve()
+        })
     }
 
     @objc func clearAllCookies(_ call: CAPPluginCall) {
@@ -87,10 +79,8 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
             let dataStore = WKWebsiteDataStore.default()
             let dataTypes = Set([WKWebsiteDataTypeCookies])
 
-            dataStore.removeData(
-                ofTypes: dataTypes,
-                modifiedSince: Date(timeIntervalSince1970: 0)
-            ) {
+            dataStore.removeData(ofTypes: dataTypes,
+                                 modifiedSince: Date(timeIntervalSince1970: 0)) {
                 call.resolve()
             }
         }
@@ -101,10 +91,8 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
             let dataStore = WKWebsiteDataStore.default()
             let dataTypes = Set([WKWebsiteDataTypeDiskCache, WKWebsiteDataTypeMemoryCache])
 
-            dataStore.removeData(
-                ofTypes: dataTypes,
-                modifiedSince: Date(timeIntervalSince1970: 0)
-            ) {
+            dataStore.removeData(ofTypes: dataTypes,
+                                 modifiedSince: Date(timeIntervalSince1970: 0)) {
                 call.resolve()
             }
         }
@@ -112,8 +100,7 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
 
     @objc func clearCookies(_ call: CAPPluginCall) {
         guard let url = call.getString("url"),
-            let host = URL(string: url)?.host
-        else {
+              let host = URL(string: url)?.host else {
             call.reject("Invalid URL")
             return
         }
@@ -122,9 +109,7 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
             WKWebsiteDataStore.default().httpCookieStore.getAllCookies { cookies in
                 let group = DispatchGroup()
                 for cookie in cookies {
-                    if cookie.domain == host || cookie.domain.hasSuffix(".\(host)")
-                        || host.hasSuffix(cookie.domain)
-                    {
+                    if cookie.domain == host || cookie.domain.hasSuffix(".\(host)") || host.hasSuffix(cookie.domain) {
                         group.enter()
                         WKWebsiteDataStore.default().httpCookieStore.delete(cookie) {
                             group.leave()
@@ -153,10 +138,7 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
                 var cookieDict = [String: String]()
                 for cookie in cookies {
 
-                    if (includeHttpOnly || !cookie.isHTTPOnly)
-                        && (cookie.domain == host || cookie.domain.hasSuffix(".\(host)")
-                            || host.hasSuffix(cookie.domain))
-                    {
+                    if (includeHttpOnly || !cookie.isHTTPOnly) && (cookie.domain == host || cookie.domain.hasSuffix(".\(host)") || host.hasSuffix(cookie.domain)) {
                         cookieDict[cookie.name] = cookie.value
                     }
                 }
@@ -219,9 +201,9 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
 
                 // Try several path combinations to find the asset
                 let paths = [
-                    icon,  // Just the icon name
-                    "public/\(icon)",  // With public/ prefix
-                    icon.replacingOccurrences(of: "public/", with: ""),  // Without public/ prefix
+                    icon,                    // Just the icon name
+                    "public/\(icon)",        // With public/ prefix
+                    icon.replacingOccurrences(of: "public/", with: "")  // Without public/ prefix
                 ]
 
                 var foundImage = false
@@ -234,13 +216,10 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
                     print("[DEBUG] Trying to load from: \(fileURL.path)")
 
                     if FileManager.default.fileExists(atPath: fileURL.path),
-                        let data = try? Data(contentsOf: fileURL),
-                        let img = UIImage(data: data)
-                    {
+                       let data = try? Data(contentsOf: fileURL),
+                       let img = UIImage(data: data) {
                         buttonNearDoneIcon = img.withRenderingMode(.alwaysTemplate)
-                        print(
-                            "[DEBUG] Successfully loaded buttonNearDone from web assets: \(fileURL.path)"
-                        )
+                        print("[DEBUG] Successfully loaded buttonNearDone from web assets: \(fileURL.path)")
                         foundImage = true
                         break
                     }
@@ -252,13 +231,10 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
                         print("[DEBUG] Trying to load from www dir: \(wwwFileURL.path)")
 
                         if FileManager.default.fileExists(atPath: wwwFileURL.path),
-                            let data = try? Data(contentsOf: wwwFileURL),
-                            let img = UIImage(data: data)
-                        {
+                           let data = try? Data(contentsOf: wwwFileURL),
+                           let img = UIImage(data: data) {
                             buttonNearDoneIcon = img.withRenderingMode(.alwaysTemplate)
-                            print(
-                                "[DEBUG] Successfully loaded buttonNearDone from www dir: \(wwwFileURL.path)"
-                            )
+                            print("[DEBUG] Successfully loaded buttonNearDone from www dir: \(wwwFileURL.path)")
                             foundImage = true
                             break
                         }
@@ -282,8 +258,7 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
 
                         // List directories to help debugging
                         do {
-                            let contents = try FileManager.default.contentsOfDirectory(
-                                atPath: resourceURL.path)
+                            let contents = try FileManager.default.contentsOfDirectory(atPath: resourceURL.path)
                             print("[DEBUG] Root bundle contents: \(contents)")
 
                             // Check if public or www directories exist
@@ -309,8 +284,7 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
         let headers = call.getObject("headers", [:]).mapValues { String(describing: $0 as Any) }
         let closeModal = call.getBool("closeModal", false)
         let closeModalTitle = call.getString("closeModalTitle", "Close")
-        let closeModalDescription = call.getString(
-            "closeModalDescription", "Are you sure you want to close this window?")
+        let closeModalDescription = call.getString("closeModalDescription", "Are you sure you want to close this window?")
         let closeModalOk = call.getString("closeModalOk", "OK")
         let closeModalCancel = call.getString("closeModalCancel", "Cancel")
         let isInspectable = call.getBool("isInspectable", false)
@@ -318,19 +292,17 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
         let isAnimated = call.getBool("isAnimated", true)
 
         // Validate preShowScript requires isPresentAfterPageLoad
-        if call.getString("preShowScript") != nil && !call.getBool("isPresentAfterPageLoad", false)
-        {
+        if call.getString("preShowScript") != nil && !call.getBool("isPresentAfterPageLoad", false) {
             call.reject("preShowScript requires isPresentAfterPageLoad to be true")
             return
         }
 
         // Validate closeModal options
         if closeModal {
-            if call.getString("closeModalTitle") != nil
-                || call.getString("closeModalDescription") != nil
-                || call.getString("closeModalOk") != nil
-                || call.getString("closeModalCancel") != nil
-            {
+            if call.getString("closeModalTitle") != nil ||
+                call.getString("closeModalDescription") != nil ||
+                call.getString("closeModalOk") != nil ||
+                call.getString("closeModalCancel") != nil {
                 // Store the values to be set after proper initialization
                 self.closeModalTitle = closeModalTitle
                 self.closeModalDescription = closeModalDescription
@@ -339,11 +311,10 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
             }
         } else {
             // Reject if closeModal is false but closeModal options are provided
-            if call.getString("closeModalTitle") != nil
-                || call.getString("closeModalDescription") != nil
-                || call.getString("closeModalOk") != nil
-                || call.getString("closeModalCancel") != nil
-            {
+            if call.getString("closeModalTitle") != nil ||
+                call.getString("closeModalDescription") != nil ||
+                call.getString("closeModalOk") != nil ||
+                call.getString("closeModalCancel") != nil {
                 call.reject("closeModal options require closeModal to be true")
                 return
             }
@@ -370,8 +341,7 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
         }
 
         let toolbarType = call.getString("toolbarType", "")
-        let backgroundColor =
-            call.getString("backgroundColor", "black") == "white" ? UIColor.white : UIColor.black
+        let backgroundColor = call.getString("backgroundColor", "black") == "white" ? UIColor.white : UIColor.black
 
         // Don't null out shareDisclaimer regardless of toolbarType
         // if toolbarType != "activity" {
@@ -392,10 +362,7 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
                 return
             }
 
-            self.webViewController = WKWebViewController.init(
-                url: url, headers: headers, isInspectable: isInspectable, credentials: credentials,
-                preventDeeplink: preventDeeplink, blankNavigationTab: toolbarType == "blank",
-                cookies: cookiesArray)
+            self.webViewController = WKWebViewController.init(url: url, headers: headers, isInspectable: isInspectable, credentials: credentials, preventDeeplink: preventDeeplink, blankNavigationTab: toolbarType == "blank", cookies: cookiesArray)
 
             guard let webViewController = self.webViewController else {
                 call.reject("Failed to initialize WebViewController")
@@ -403,14 +370,14 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
             }
 
             if self.bridge?.statusBarVisible == true {
-                let subviews = self.bridge?.webView?.superview?.subviews
-                if let emptyStatusBarIndex = subviews?.firstIndex(where: { $0.subviews.isEmpty }) {
-                    if let emptyStatusBar = subviews?[emptyStatusBarIndex] {
-                        webViewController.capacitorStatusBar = emptyStatusBar
-                        emptyStatusBar.removeFromSuperview()
-                    }
-                }
-            }
+				let subviews = self.bridge?.webView?.superview?.subviews
+				if let emptyStatusBarIndex = subviews?.firstIndex(where: { $0.subviews.isEmpty }) {
+					if let emptyStatusBar = subviews?[emptyStatusBarIndex] {
+						webViewController.capacitorStatusBar = emptyStatusBar
+						emptyStatusBar.removeFromSuperview()
+					}
+				}
+			}
 
             webViewController.source = .remote(url)
             webViewController.leftNavigationBarItemTypes = []
@@ -423,8 +390,7 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
                 webViewController.showArrowAsClose = true
             } else {
                 // Default X on right
-                webViewController.doneBarButtonItemPosition =
-                    toolbarType == "activity" ? .none : .right
+                webViewController.doneBarButtonItemPosition = toolbarType == "activity" ? .none : .right
                 webViewController.showArrowAsClose = false
             }
 
@@ -440,9 +406,7 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
                 if call.getString("shareSubject") != nil {
                     // Add share button to right bar
                     webViewController.rightNavigaionBarItemTypes.append(.activity)
-                    print(
-                        "[DEBUG] Activity mode: Added share button, shareSubject: \(call.getString("shareSubject") ?? "nil")"
-                    )
+                    print("[DEBUG] Activity mode: Added share button, shareSubject: \(call.getString("shareSubject") ?? "nil")")
                 } else {
                     // In activity mode, always make the share button visible by setting a default shareSubject
                     webViewController.shareSubject = "Share"
@@ -516,31 +480,26 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
             if closeModal {
                 webViewController.closeModal = true
                 webViewController.closeModalTitle = self.closeModalTitle ?? closeModalTitle
-                webViewController.closeModalDescription =
-                    self.closeModalDescription ?? closeModalDescription
+                webViewController.closeModalDescription = self.closeModalDescription ?? closeModalDescription
                 webViewController.closeModalOk = self.closeModalOk ?? closeModalOk
                 webViewController.closeModalCancel = self.closeModalCancel ?? closeModalCancel
             }
 
-            self.navigationWebViewController = UINavigationController.init(
-                rootViewController: webViewController)
+            self.navigationWebViewController = UINavigationController.init(rootViewController: webViewController)
             self.navigationWebViewController?.navigationBar.isTranslucent = false
             self.navigationWebViewController?.toolbar.isTranslucent = false
 
             // Ensure no lines or borders appear by default
-            self.navigationWebViewController?.navigationBar.setBackgroundImage(
-                UIImage(), for: .default)
+            self.navigationWebViewController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
             self.navigationWebViewController?.navigationBar.shadowImage = UIImage()
             self.navigationWebViewController?.navigationBar.setValue(true, forKey: "hidesShadow")
-            self.navigationWebViewController?.toolbar.setShadowImage(
-                UIImage(), forToolbarPosition: .any)
+            self.navigationWebViewController?.toolbar.setShadowImage(UIImage(), forToolbarPosition: .any)
 
             // Handle web view background color
             webViewController.view.backgroundColor = backgroundColor
 
             // Handle toolbar color
-            if let toolbarColor = call.getString("toolbarColor"), self.isHexColorCode(toolbarColor)
-            {
+            if let toolbarColor = call.getString("toolbarColor"), self.isHexColorCode(toolbarColor) {
                 // If specific color provided, use it
                 let color = UIColor(hexString: toolbarColor)
 
@@ -554,9 +513,7 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
 
                 // Apply text color
                 let textColor: UIColor
-                if let toolbarTextColor = call.getString("toolbarTextColor"),
-                    self.isHexColorCode(toolbarTextColor)
-                {
+                if let toolbarTextColor = call.getString("toolbarTextColor"), self.isHexColorCode(toolbarTextColor) {
                     textColor = UIColor(hexString: toolbarTextColor)
                 } else {
                     textColor = isDark ? UIColor.white : UIColor.black
@@ -565,18 +522,14 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
                 // Apply tint color to all UI elements without changing background
                 self.navigationWebViewController?.navigationBar.tintColor = textColor
                 webViewController.tintColor = textColor
-                self.navigationWebViewController?.navigationBar.titleTextAttributes = [
-                    NSAttributedString.Key.foregroundColor: textColor
-                ]
+                self.navigationWebViewController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: textColor]
             } else {
                 // Use system appearance
                 let isDarkMode = UITraitCollection.current.userInterfaceStyle == .dark
                 let backgroundColor = isDarkMode ? UIColor.black : UIColor.white
                 let textColor: UIColor
 
-                if let toolbarTextColor = call.getString("toolbarTextColor"),
-                    self.isHexColorCode(toolbarTextColor)
-                {
+                if let toolbarTextColor = call.getString("toolbarTextColor"), self.isHexColorCode(toolbarTextColor) {
                     textColor = UIColor(hexString: toolbarTextColor)
                 } else {
                     textColor = isDarkMode ? UIColor.white : UIColor.black
@@ -586,9 +539,7 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
                 webViewController.setupStatusBarBackground(color: backgroundColor)
                 webViewController.tintColor = textColor
                 self.navigationWebViewController?.navigationBar.tintColor = textColor
-                self.navigationWebViewController?.navigationBar.titleTextAttributes = [
-                    NSAttributedString.Key.foregroundColor: textColor
-                ]
+                self.navigationWebViewController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: textColor]
                 webViewController.statusBarStyle = isDarkMode ? .lightContent : .darkContent
                 webViewController.updateStatusBarStyle()
 
@@ -601,9 +552,7 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
 
                 // Even with hidden navigation bar, we need to set proper status bar appearance
                 // If toolbarColor is explicitly set, use that for status bar style
-                if let toolbarColor = call.getString("toolbarColor"),
-                    self.isHexColorCode(toolbarColor)
-                {
+                if let toolbarColor = call.getString("toolbarColor"), self.isHexColorCode(toolbarColor) {
                     let color = UIColor(hexString: toolbarColor)
                     let isDark = self.isDarkColor(color)
                     webViewController.statusBarStyle = isDark ? .lightContent : .darkContent
@@ -700,7 +649,7 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
         do {
             let regex = try NSRegularExpression(pattern: hexColorRegex)
             let range = NSRange(location: 0, length: input.utf16.count)
-            if regex.firstMatch(in: input, options: [], range: range) != nil {
+            if let _ = regex.firstMatch(in: input, options: [], range: range) {
                 return true
             }
         } catch {
@@ -735,15 +684,14 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
         let credentials = self.readCredentials(call)
         let cookiesArray = call.getArray("cookies") as? [[String: Any]]
 
+
         DispatchQueue.main.async {
             guard let url = URL(string: urlString) else {
                 call.reject("Invalid URL format")
                 return
             }
 
-            self.webViewController = WKWebViewController.init(
-                url: url, headers: headers, isInspectable: isInspectable, credentials: credentials,
-                preventDeeplink: preventDeeplink, blankNavigationTab: true, cookies: cookiesArray)
+            self.webViewController = WKWebViewController.init(url: url, headers: headers, isInspectable: isInspectable, credentials: credentials, preventDeeplink: preventDeeplink, blankNavigationTab: true, cookies: cookiesArray)
 
             guard let webViewController = self.webViewController else {
                 call.reject("Failed to initialize WebViewController")
@@ -751,27 +699,25 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
             }
 
             if self.bridge?.statusBarVisible == true {
-                let subviews = self.bridge?.webView?.superview?.subviews
-                if let emptyStatusBarIndex = subviews?.firstIndex(where: { $0.subviews.isEmpty }) {
-                    if let emptyStatusBar = subviews?[emptyStatusBarIndex] {
-                        webViewController.capacitorStatusBar = emptyStatusBar
-                        emptyStatusBar.removeFromSuperview()
-                    }
-                }
-            }
+				let subviews = self.bridge?.webView?.superview?.subviews
+				if let emptyStatusBarIndex = subviews?.firstIndex(where: { $0.subviews.isEmpty }) {
+					if let emptyStatusBar = subviews?[emptyStatusBarIndex] {
+						webViewController.capacitorStatusBar = emptyStatusBar
+						emptyStatusBar.removeFromSuperview()
+					}
+				}
+			}
 
             webViewController.source = .remote(url)
             webViewController.leftNavigationBarItemTypes = [.back, .forward, .reload]
             webViewController.capBrowserPlugin = self
             webViewController.hasDynamicTitle = true
 
-            self.navigationWebViewController = UINavigationController.init(
-                rootViewController: webViewController)
+            self.navigationWebViewController = UINavigationController.init(rootViewController: webViewController)
             self.navigationWebViewController?.navigationBar.isTranslucent = false
 
             // Ensure no lines or borders appear by default
-            self.navigationWebViewController?.navigationBar.setBackgroundImage(
-                UIImage(), for: .default)
+            self.navigationWebViewController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
             self.navigationWebViewController?.navigationBar.shadowImage = UIImage()
             self.navigationWebViewController?.navigationBar.setValue(true, forKey: "hidesShadow")
 
@@ -784,9 +730,7 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
             webViewController.setupStatusBarBackground(color: backgroundColor)
             webViewController.tintColor = textColor
             self.navigationWebViewController?.navigationBar.tintColor = textColor
-            self.navigationWebViewController?.navigationBar.titleTextAttributes = [
-                NSAttributedString.Key.foregroundColor: textColor
-            ]
+            self.navigationWebViewController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: textColor]
             webViewController.statusBarStyle = isDarkMode ? .lightContent : .darkContent
             webViewController.updateStatusBarStyle()
 
@@ -805,8 +749,7 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
     @objc func close(_ call: CAPPluginCall) {
         DispatchQueue.main.async {
             self.navigationWebViewController?.dismiss(animated: true, completion: nil)
-            self.notifyListeners(
-                "closeEvent", data: ["url": self.webViewController?.url?.absoluteString ?? ""])
+            self.notifyListeners("closeEvent", data: ["url": self.webViewController?.url?.absoluteString ?? ""])
             call.resolve()
         }
     }
@@ -843,12 +786,8 @@ public class InAppBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
 
     private func readCredentials(_ call: CAPPluginCall) -> WKWebViewCredentials? {
         var credentials: WKWebViewCredentials?
-        let credentialsDict = call.getObject("credentials", [:]).mapValues {
-            String(describing: $0 as Any)
-        }
-        if !credentialsDict.isEmpty, let username = credentialsDict["username"],
-            let password = credentialsDict["password"]
-        {
+        let credentialsDict = call.getObject("credentials", [:]).mapValues { String(describing: $0 as Any) }
+        if !credentialsDict.isEmpty, let username = credentialsDict["username"], let password = credentialsDict["password"] {
             credentials = WKWebViewCredentials(username: username, password: password)
         }
         return credentials
